@@ -29,6 +29,11 @@ int main(void) {
         long d[] = {1, 2, 3, 5};
         ASSERT(c != d);
         ASSERT_MEM_MATCHES(c, d, 3);
+
+        char e[] = {'a', 'b', 'c', 'd'};
+        char f[] = {'a', 'b', 'c', 'd'};
+        ASSERT(e != f);
+        ASSERT_MEM_MATCHES(e, f, 4);
     }
 
     TEST("differently-sized memory test") {
@@ -63,6 +68,13 @@ int main(void) {
         int bcd[] = {1, 2, 4};
         ASSERT(a != bcd);
         ASSERT_MEM_MATCHES(a, bcd, 3);
+    }
+
+    TEST("non-matching memory test 5") {
+        long a[] = {6, 7, 8000};
+        long b[] = {6, 7, -1};
+        ASSERT(a != b);
+        ASSERT_MEM_MATCHES(a, b, 3);
     }
 
     return any_failed;
