@@ -22,80 +22,80 @@ int main(void) {
         ASSERT_EQ(1, 1, "%d");
         ASSERT_EQ(3UL, 3UL, "%lu");
         ASSERT_INT_EQ(4, 4);
+        ASSERT_INT_EQ((long) -1, (long) -1);
         ASSERT_UINT_EQ(5u, 5u);
-        ASSERT_LONG_EQ(-10L, -10L);
-        ASSERT_ULONG_EQ(15L, 15L);
+        ASSERT_UINT_EQ(15L, 15L);
         int a = 5;
         ASSERT_PTR_EQ(&a, &a);
     }
 
     TEST("int eq fail")     { ASSERT_INT_EQ(5, 6);      }
     TEST("uint eq fail")    { ASSERT_UINT_EQ(6u, 7u);   }
-    TEST("long eq fail")    { ASSERT_LONG_EQ(-7L, -8L); }
-    TEST("ulong eq fail")   { ASSERT_ULONG_EQ((unsigned long) -1, 0L); }
+    TEST("long eq fail")    { ASSERT_INT_EQ(-7L, -8L); }
+    TEST("ulong eq fail")   { ASSERT_UINT_EQ((unsigned long) -1, 0L); }
     TEST("ptr eq fail") {
         int a = 7;
         int b = 7;
         ASSERT_PTR_EQ(&a, &b);
     }
 
-    TEST("matching memory tests") {
+    TEST("memory eq tests") {
         int a[] = {1, 2, 3};
         int bb[] = {1, 2, 3};
         int *b = bb;
         ASSERT(a != b);
-        ASSERT_MEM_MATCHES(a, b, 3);
+        ASSERT_MEM_EQ(a, b, 3);
 
         long c[] = {1, 2, 3, 4};
         long d[] = {1, 2, 3, 5};
         ASSERT(c != d);
-        ASSERT_MEM_MATCHES(c, d, 3);
+        ASSERT_MEM_EQ(c, d, 3);
 
         char e[] = {'a', 'b', 'c', 'd'};
         char f[] = {'a', 'b', 'c', 'd'};
         ASSERT(e != f);
-        ASSERT_MEM_MATCHES(e, f, 4);
+        ASSERT_MEM_EQ(e, f, 4);
     }
 
     TEST("differently-sized memory test") {
         int a[] = {1, 2};
         long b[] = {3};
-        ASSERT_MEM_MATCHES(a, b, 2);
+        ASSERT_MEM_EQ(a, b, 2);
     }
 
-    TEST("non-matching memory test 1") {
+    TEST("non-eq memory test 1") {
         int a[] = {1, 2, 3};
         int b[] = {4, 2, 3};
         ASSERT(a != b);
-        ASSERT_MEM_MATCHES(a, b, 3);
+        ASSERT_MEM_EQ(a, b, 3);
     }
 
-    TEST("non-matching memory test 2") {
+    TEST("non-eq memory test 2") {
         int a[] = {1, 2, 3};
         int b[] = {1, 2, 4};
         ASSERT(a != b);
-        ASSERT_MEM_MATCHES(a, b, 3);
+        ASSERT_MEM_EQ(a, b, 3);
     }
 
-    TEST("non-matching memory test 3") {
+    TEST("non-eq memory test 3") {
         int abc[] = {1, 2, 3};
         int b[] = {1, 2, 4};
         ASSERT(abc != b);
-        ASSERT_MEM_MATCHES(abc, b, 3);
+        ASSERT_MEM_EQ(abc, b, 3);
     }
 
-    TEST("non-matching memory test 4") {
+    TEST("non-eq memory test 4") {
         int a[] = {1, 2, 3};
         int bcd[] = {1, 2, 4};
         ASSERT(a != bcd);
-        ASSERT_MEM_MATCHES(a, bcd, 3);
+        ASSERT_MEM_EQ(a, bcd, 3);
     }
 
-    TEST("non-matching memory test 5") {
+    TEST("non-eq memory test 5") {
         long a[] = {6, 7, 8000};
         long b[] = {6, 7, -1};
         ASSERT(a != b);
-        ASSERT_MEM_MATCHES(a, b, 3);
+        ASSERT_MEM_EQ(a, b, 3);
     }
 
     return any_failed;
