@@ -18,5 +18,52 @@ int main(void) {
     }
     printf("Any failed? %d\n", any_failed);
 
+    TEST("matching memory tests") {
+        int a[] = {1, 2, 3};
+        int bb[] = {1, 2, 3};
+        int *b = bb;
+        ASSERT(a != b);
+        ASSERT_MEM_MATCHES(a, b, 3);
+
+        long c[] = {1, 2, 3, 4};
+        long d[] = {1, 2, 3, 5};
+        ASSERT(c != d);
+        ASSERT_MEM_MATCHES(c, d, 3);
+    }
+
+    TEST("differently-sized memory test") {
+        int a[] = {1, 2};
+        long b[] = {3};
+        ASSERT_MEM_MATCHES(a, b, 2);
+    }
+
+    TEST("non-matching memory test 1") {
+        int a[] = {1, 2, 3};
+        int b[] = {4, 2, 3};
+        ASSERT(a != b);
+        ASSERT_MEM_MATCHES(a, b, 3);
+    }
+
+    TEST("non-matching memory test 2") {
+        int a[] = {1, 2, 3};
+        int b[] = {1, 2, 4};
+        ASSERT(a != b);
+        ASSERT_MEM_MATCHES(a, b, 3);
+    }
+
+    TEST("non-matching memory test 3") {
+        int abc[] = {1, 2, 3};
+        int b[] = {1, 2, 4};
+        ASSERT(abc != b);
+        ASSERT_MEM_MATCHES(abc, b, 3);
+    }
+
+    TEST("non-matching memory test 4") {
+        int a[] = {1, 2, 3};
+        int bcd[] = {1, 2, 4};
+        ASSERT(a != bcd);
+        ASSERT_MEM_MATCHES(a, bcd, 3);
+    }
+
     return any_failed;
 }
