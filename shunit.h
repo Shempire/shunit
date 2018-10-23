@@ -14,30 +14,36 @@
         _SHUNIT_TESTING_ = NULL, printf("--- [%s] succeeded\n", (_name))    \
     )
 
+#define _SHUNIT_FAIL_PRINT(_msg, ...)                                       \
+    printf("--- [%s] FAILED at " _msg " (" __FILE__ " line %d)\n",          \
+            _SHUNIT_TESTING_,                                               \
+            __VA_ARGS__,                                                    \
+            __LINE__)
+
+#define _SHUNIT_FAIL_END  ON_TEST_FAIL; break;
+
+#define _SHUNIT_FAIL(_msg, ...)                                             \
+    _SHUNIT_FAIL_PRINT(_msg, __VA_ARGS__);                                  \
+    _SHUNIT_FAIL_END;
+
 #define ASSERT(_cond)                                                       \
     if (!(_cond)) {                                                         \
-        printf("--- [%s] FAILED at <" #_cond "> "                           \
-                "(" __FILE__ " line %d)\n", _SHUNIT_TESTING_, __LINE__);    \
-        ON_TEST_FAIL;                                                       \
-        break;                                                              \
+        _SHUNIT_FAIL("<%s>", #_cond);                                       \
     }
 
 #define ASSERT_EQ(_a, _b, _format)                                          \
     if ((_a) != (_b)) {                                                     \
-        printf("--- [%s] FAILED at EQ<" #_a ", " #_b ">: " _format " != "   \
-                _format " (" __FILE__ " line %d)\n", _SHUNIT_TESTING_,      \
-                (_a), (_b), __LINE__);                                      \
-        ON_TEST_FAIL;                                                       \
-        break;                                                              \
+        _SHUNIT_FAIL("EQ<" #_a ", " #_b ">: " _format " != " _format,       \
+                (_a), (_b));                                                \
     }
 
-#define ASSERT_INT_EQ(_a, _b)   ASSERT_EQ((_a), (_b), "%d")
-#define ASSERT_UINT_EQ(_a, _b)  ASSERT_EQ((_a), (_b), "%u")
-#define ASSERT_LONG_EQ(_a, _b)  ASSERT_EQ((_a), (_b), "%ld")
-#define ASSERT_ULONG_EQ(_a, _b) ASSERT_EQ((_a), (_b), "%lu")
-#define ASSERT_SIZE_EQ(_a, _b)  ASSERT_EQ((_a), (_b), "%zu")
-#define ASSERT_SSIZE_EQ(_a, _b) ASSERT_EQ((_a), (_b), "%zd")
-#define ASSERT_PTR_EQ(_a, _b)   ASSERT_EQ((_a), (_b), "%p")
+#define ASSERT_INT_EQ(_a, _b)   ASSERT_EQ(_a, _b, "%d")
+#define ASSERT_UINT_EQ(_a, _b)  ASSERT_EQ(_a, _b, "%u")
+#define ASSERT_LONG_EQ(_a, _b)  ASSERT_EQ(_a, _b, "%ld")
+#define ASSERT_ULONG_EQ(_a, _b) ASSERT_EQ(_a, _b, "%lu")
+#define ASSERT_SIZE_EQ(_a, _b)  ASSERT_EQ(_a, _b, "%zu")
+#define ASSERT_SSIZE_EQ(_a, _b) ASSERT_EQ(_a, _b, "%zd")
+#define ASSERT_PTR_EQ(_a, _b)   ASSERT_EQ(_a, _b, "%p")
 
 static void _shunit_print_mem(
         char *name,
@@ -84,19 +90,14 @@ static void _shunit_print_mem_cmp(
 
 #define ASSERT_MEM_MATCHES(_p1, _p2, _size)                                 \
     if (sizeof(*(_p1)) != sizeof(*(_p2))) {                                 \
-        printf("--- [%s] FAILED at MEM_MATCHES<" #_p1 ", " #_p2 ">: "       \
-            "sizeof(*(" #_p1 ")) = %zu; sizeof(*(" #_p2 ")) = %zu "         \
-            "(" __FILE__ " line %d)\n", _SHUNIT_TESTING_, sizeof(*(_p1)),   \
-            sizeof(*(_p2)), __LINE__);                                      \
-        ON_TEST_FAIL;                                                       \
-        break;                                                              \
+        _SHUNIT_FAIL("MEM_MATCHES<" #_p1 ", " #_p2 ">: "                    \
+                "sizeof(*(" #_p1 ")) = %zu; sizeof(*(" #_p2 ")) = %zu",     \
+                sizeof(*(_p1)), sizeof(*(_p2)));                            \
     } else if (memcmp((_p1), (_p2), sizeof(*(_p1)) * (_size)) != 0) {       \
-        printf("--- [%s] FAILED at MEM_MATCHES<" #_p1 ", " #_p2 "> "        \
-                "for %zu items / %zu bytes (" __FILE__ " line %d)\n",       \
-                _SHUNIT_TESTING_, (size_t) (_size),                         \
-                (size_t) (_size) * sizeof(*(_p1)), __LINE__);               \
+        _SHUNIT_FAIL_PRINT("MEM_MATCHES<" #_p1 ", " #_p2 "> "               \
+                "for %zu items / %zu bytes",                                \
+                (size_t) (_size), (size_t) (_size) & sizeof(*(_p1)));       \
         _shunit_print_mem_cmp(#_p1, #_p2, (_p1), (_p2),                     \
                 sizeof(*(_p1)), (_size));                                   \
-        ON_TEST_FAIL;                                                       \
-        break;                                                              \
+        _SHUNIT_FAIL_END;                                                   \
     }
