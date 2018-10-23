@@ -18,6 +18,27 @@ int main(void) {
     }
     printf("Any failed? %d\n", any_failed);
 
+    TEST("eq tests") {
+        ASSERT_EQ(1, 1, "%d");
+        ASSERT_EQ(3UL, 3UL, "%lu");
+        ASSERT_INT_EQ(4, 4);
+        ASSERT_UINT_EQ(5u, 5u);
+        ASSERT_LONG_EQ(-10L, -10L);
+        ASSERT_ULONG_EQ(15L, 15L);
+        int a = 5;
+        ASSERT_PTR_EQ(&a, &a);
+    }
+
+    TEST("int eq fail")     { ASSERT_INT_EQ(5, 6);      }
+    TEST("uint eq fail")    { ASSERT_UINT_EQ(6u, 7u);   }
+    TEST("long eq fail")    { ASSERT_LONG_EQ(-7L, -8L); }
+    TEST("ulong eq fail")   { ASSERT_ULONG_EQ((unsigned long) -1, 0L); }
+    TEST("ptr eq fail") {
+        int a = 7;
+        int b = 7;
+        ASSERT_PTR_EQ(&a, &b);
+    }
+
     TEST("matching memory tests") {
         int a[] = {1, 2, 3};
         int bb[] = {1, 2, 3};

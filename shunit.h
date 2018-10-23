@@ -22,6 +22,23 @@
         break;                                                              \
     }
 
+#define ASSERT_EQ(_a, _b, _format)                                          \
+    if ((_a) != (_b)) {                                                     \
+        printf("--- [%s] FAILED at EQ<" #_a ", " #_b ">: " _format " != "   \
+                _format " (" __FILE__ " line %d)\n", _SHUNIT_TESTING_,      \
+                (_a), (_b), __LINE__);                                      \
+        ON_TEST_FAIL;                                                       \
+        break;                                                              \
+    }
+
+#define ASSERT_INT_EQ(_a, _b)   ASSERT_EQ((_a), (_b), "%d")
+#define ASSERT_UINT_EQ(_a, _b)  ASSERT_EQ((_a), (_b), "%u")
+#define ASSERT_LONG_EQ(_a, _b)  ASSERT_EQ((_a), (_b), "%ld")
+#define ASSERT_ULONG_EQ(_a, _b) ASSERT_EQ((_a), (_b), "%lu")
+#define ASSERT_SIZE_EQ(_a, _b)  ASSERT_EQ((_a), (_b), "%zu")
+#define ASSERT_SSIZE_EQ(_a, _b) ASSERT_EQ((_a), (_b), "%zd")
+#define ASSERT_PTR_EQ(_a, _b)   ASSERT_EQ((_a), (_b), "%p")
+
 static void _shunit_print_mem(
         char *name,
         size_t name_pad,
