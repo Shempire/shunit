@@ -80,7 +80,7 @@
         }                                                                   \
     }
 
-static void _shunit_print_mem(
+inline static void _shunit_print_mem(
         char *name,
         size_t name_pad,
         void *p,
@@ -109,7 +109,7 @@ static void _shunit_print_mem(
     printf("\n");
 }
 
-static void _shunit_print_mem_cmp(
+inline static void _shunit_print_mem_cmp(
         char *p1_name,
         char *p2_name,
         void *p1,
