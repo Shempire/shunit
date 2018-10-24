@@ -18,9 +18,7 @@ int main(void) {
     }
     printf("Any failed? %d\n", any_failed);
 
-    TEST("eq tests") {
-        ASSERT_EQ(1, 1, "%d");
-        ASSERT_EQ(3UL, 3UL, "%lu");
+    TEST("int eq tests") {
         ASSERT_INT_EQ(4, 4);
         ASSERT_INT_EQ((long) -1, (long) -1);
         ASSERT_UINT_EQ(5u, 5u);
@@ -29,8 +27,8 @@ int main(void) {
         ASSERT_PTR_EQ(&a, &a);
     }
 
-    TEST("int eq fail")     { ASSERT_INT_EQ(5, 6);      }
-    TEST("uint eq fail")    { ASSERT_UINT_EQ(6u, 7u);   }
+    TEST("int eq fail")     { ASSERT_INT_EQ(5, 6); }
+    TEST("uint eq fail")    { ASSERT_UINT_EQ(6u, 7u); }
     TEST("long eq fail")    { ASSERT_INT_EQ(-7L, -8L); }
     TEST("ulong eq fail")   { ASSERT_UINT_EQ((unsigned long) -1, 0L); }
     TEST("ptr eq fail") {
@@ -96,6 +94,16 @@ int main(void) {
         long b[] = {6, 7, -1};
         ASSERT(a != b);
         ASSERT_MEM_EQ(a, b, 3);
+    }
+
+    int a_count = 0, b_count = 0;
+    TEST("should fail -- helper for test below") {
+        int a[] = {1, 2, 3}, b[] = {1, 2, 4};
+        ASSERT_MEM_EQ((a_count++, a), (b_count++, b), 3);
+    }
+    TEST("memory-eq tests only execute expressions once") {
+        ASSERT_INT_EQ(a_count, 1);
+        ASSERT_INT_EQ(b_count, 1);
     }
 
     return any_failed;
